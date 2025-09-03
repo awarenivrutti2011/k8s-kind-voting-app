@@ -1,40 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vote-oom
   labels:
     app: vote
+  name: vote
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vote-oom
+      app: vote
   template:
     metadata:
       labels:
-        app: vote-oom
+        app: vote
     spec:
       containers:
-      - name: vote
-        image: dockersamples/examplevotingapp_vote
+      - image: dockersamples/examplevotingapp_vote
+        name: vote
         ports:
         - containerPort: 80
-          name: http
-        # Add resource limits to force OOMKill
-        resources:
-          requests:
-            memory: "100Mi"
-          limits:
-            memory: "200Mi"   # 🔴 very low, likely to cause OOM
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 15
-          periodSeconds: 20
+          name: vote
