@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vote
+  name: vote-oom
   labels:
     app: vote
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vote
+      app: vote-oom
   template:
     metadata:
       labels:
-        app: vote
+        app: vote-oom
     spec:
       containers:
       - name: vote
@@ -20,6 +20,12 @@ spec:
         ports:
         - containerPort: 80
           name: http
+        # Add resource limits to force OOMKill
+        resources:
+          requests:
+            memory: "50Mi"
+          limits:
+            memory: "100Mi"   # 🔴 very low, likely to cause OOM
         readinessProbe:
           httpGet:
             path: /
