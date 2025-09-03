@@ -23,9 +23,9 @@ spec:
         # Add resource limits to force OOMKill
         resources:
           requests:
-            memory: "50Mi"
+            memory: "10Mi"
           limits:
-            memory: "100Mi"   # 🔴 very low, likely to cause OOM
+            memory: "20Mi"   # 🔴 very low, likely to cause OOM
         readinessProbe:
           httpGet:
             path: /
