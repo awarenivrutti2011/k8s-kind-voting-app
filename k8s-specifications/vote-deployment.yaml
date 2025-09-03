@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: vote-readiness-fail
   labels:
-    app: vote
-  name: vote
+    app: vote-readiness
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vote
+      app: vote-readiness
   template:
     metadata:
       labels:
-        app: vote
+        app: vote-readiness
     spec:
       containers:
       - name: vote
@@ -20,23 +20,15 @@ spec:
         ports:
         - containerPort: 80
           name: http
-
-        # Add health probes
         readinessProbe:
           httpGet:
-            path: /
+            path: /wrong-path   # ❌ invalid path
             port: 80
-          initialDelaySeconds: 5   # wait before first probe
-          periodSeconds: 10        # how often to probe
-          timeoutSeconds: 2
-          failureThreshold: 3      # pod marked Unready after 3 failures
-          successThreshold: 1      # 1 success to mark Ready
-
+          initialDelaySeconds: 5
+          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /
             port: 80
-          initialDelaySeconds: 15  # wait before first probe
-          periodSeconds: 20        # how often to probe
-          timeoutSeconds: 2
-          failureThreshold: 3      # container restarted after 3 failures
+          initialDelaySeconds: 15
+          periodSeconds: 20
