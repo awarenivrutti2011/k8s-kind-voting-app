@@ -15,8 +15,28 @@ spec:
         app: vote
     spec:
       containers:
-      - image: dockersamples/examplevotingapp_vote
-        name: vote
+      - name: vote
+        image: dockersamples/examplevotingapp_vote
         ports:
         - containerPort: 80
-          name: vote
+          name: http
+
+        # Add health probes
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5   # wait before first probe
+          periodSeconds: 10        # how often to probe
+          timeoutSeconds: 2
+          failureThreshold: 3      # pod marked Unready after 3 failures
+          successThreshold: 1      # 1 success to mark Ready
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15  # wait before first probe
+          periodSeconds: 20        # how often to probe
+          timeoutSeconds: 2
+          failureThreshold: 3      # container restarted after 3 failures
